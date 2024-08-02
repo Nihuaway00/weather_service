@@ -1,28 +1,46 @@
 package entity.user;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import exceptions.UserAlreadyExistException;
-import exceptions.UserPersistException;
+import exceptions.UserSavingException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-@WebServlet("/user")
+@WebServlet(name="userController", value = "/user/*")
 public class UserController extends HttpServlet {
     private UserService userService;
+
+    public UserController() {
+        this.userService = new UserService(new UserDao());
+    }
 
     public UserController(UserService userService){
         this.userService = userService;
     }
 
     @Override
+    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        response.setContentType("text/html");
+
+        // Hello
+        PrintWriter out = response.getWriter();
+        out.println("<html><body>");
+        out.println("<h1>" + "heeloop" + "</h1>");
+        out.println("</body></html>");
+    }
+
+    @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String action = request.getParameter("action");
+        String action = request.getPathInfo().substring(1);
         switch (action) {
             case "register":
                 register(request, response);
@@ -37,25 +55,34 @@ public class UserController extends HttpServlet {
         String result;
 
         try{
-            String name = request.getParameter("name");
-            String password = request.getParameter("password");
-            String email = request.getParameter("email");
+            StringBuilder sb = new StringBuilder();
+            BufferedReader reader = request.getReader();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                sb.append(line);
+            }
+            String requestBody = sb.toString();
 
-            userService.register(UserRegistrationRequest.builder()
-                    .email(email).name(name).password(password)
-                    .build());
+            ObjectMapper objectMapper = new ObjectMapper();
+            UserRegistrationRequest dto = objectMapper.readValue(requestBody, UserRegistrationRequest.class);
+
+            userService.register(dto);
 
             result = "Вы зареганы";
+            response.setStatus(HttpServletResponse.SC_CREATED);
         } catch (UserAlreadyExistException e) {
             result = "Такая почта уже используется";
-        } catch (UserPersistException e) {
-            result = "Ошибка на сервере";
+            response.setStatus(HttpServletResponse.SC_CONFLICT);
+        } catch (UserSavingException e) {
+            result = "Ошибка на сервере: " + e.getMessage();
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        } catch (JsonProcessingException e){
+            result = "Ошибка на сервере при преобразовании в json: " + e.getMessage();
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
 
         response.setContentType("text/html");
         PrintWriter out = response.getWriter();
-        out.println("<html><body>");
-        out.println("<h1>Registration Successful</h1>");
-        out.println("</body></html>");
+        out.println(result);
     }
 }

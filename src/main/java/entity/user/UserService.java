@@ -2,7 +2,7 @@ package entity.user;
 
 import exceptions.UserAlreadyExistException;
 import exceptions.UserDaoException;
-import exceptions.UserPersistException;
+import exceptions.UserSavingException;
 
 public class UserService {
     private final UserDao userDao;
@@ -11,10 +11,10 @@ public class UserService {
         this.userDao = userDao;
     }
 
-    public void register(UserRegistrationRequest dto) throws UserAlreadyExistException, UserPersistException {
+    public void register(UserRegistrationRequest dto) throws UserAlreadyExistException, UserSavingException {
         try {
-            if (userDao.findByEmail(dto.getEmail()).isPresent()) {
-                throw new UserAlreadyExistException("User with this email already exists");
+            if (userDao.existsByEmail(dto.getEmail())) {
+                throw new UserAlreadyExistException("Пользователь с такой почтой уже существует");
             }
             User user = new User.Builder()
                     .name(dto.getName()).email(dto.getEmail())
@@ -22,8 +22,7 @@ public class UserService {
 
             userDao.save(user);
         } catch (UserDaoException e) {
-            throw new UserPersistException("User cannot be persist");
+            throw new UserSavingException("Пользователь не может быть сохранен");
         }
-
     }
 }

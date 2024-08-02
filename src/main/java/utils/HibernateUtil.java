@@ -1,23 +1,23 @@
 package utils;
 
-import entity.user.User;
 import org.hibernate.SessionFactory;
-import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 
-public class HibernateUtil {
-    private static SessionFactory sessionFactory = buildSessionFactory();
+import java.io.File;
 
-    protected static SessionFactory buildSessionFactory() {
-        try {
-            Configuration configuration = new Configuration().configure();
-            configuration.addAnnotatedClass(User.class);
-            StandardServiceRegistryBuilder builder = new StandardServiceRegistryBuilder().applySettings(configuration.getProperties());
-            sessionFactory = configuration.buildSessionFactory(builder.build());
-        } catch (Exception e) {
-            throw new ExceptionInInitializerError("Initial SessionFactory failed" + e);
+public class HibernateUtil {
+    private static final SessionFactory sessionFactory = initSessionFactory();
+
+    protected static SessionFactory initSessionFactory() {
+        try{
+            return new Configuration()
+                    .configure()
+                    .buildSessionFactory();
+        }catch(Throwable e){
+            System.out.println(e.getMessage());
+            throw new ExceptionInInitializerError(e);
         }
-        return sessionFactory;
+
     }
 
     public static SessionFactory getSessionFactory() {

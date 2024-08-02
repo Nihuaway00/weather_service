@@ -613,7 +613,7 @@ org.hibernate.bytecode.internal.bytebuddy.PrivateAccessorException: private acce
 2024-07-23 15:56:30,559 [main] DEBUG org.hibernate.persister.entity.AbstractEntityPersister -  Update (0): update User set name=? where id=?
 2024-07-23 15:56:30,560 [main] DEBUG org.hibernate.persister.entity.AbstractEntityPersister -  Delete (0): delete from User where id=?
 2024-07-23 15:56:30,566 [main] DEBUG org.hibernate.orm.sql.ast.create - Created new SQL alias : u1_0
-2024-07-23 15:56:30,567 [main] DEBUG org.hibernate.orm.sql.ast.create - Registration of TableGroup [StandardTableGroup(entity.user.User)] with identifierForTableGroup [entity.user.User] for NavigablePath [entity.user.User] 
+2024-07-23 15:56:30,567 [main] DEBUG org.hibernate.orm.sql.ast.create - Registration of TableGroup [StandardTableGroup(entity.user.User)] with identifierForTableGroup [entity.user.User] for NavigablePath [entity.user.User]
 2024-07-23 15:56:30,576 [main] DEBUG org.hibernate.orm.results.graph.AST - DomainResult Graph:
  \-EntityResultImpl [entity.user.User]
  |  \-BasicFetch [entity.user.User.name]
