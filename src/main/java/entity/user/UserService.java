@@ -16,7 +16,7 @@ public class UserService {
             if (userDao.existsByEmail(dto.getEmail())) {
                 throw new UserAlreadyExistException("Пользователь с такой почтой уже существует");
             }
-            User user = new User.Builder()
+            User user = User.builder()
                     .name(dto.getName()).email(dto.getEmail())
                     .build();
 

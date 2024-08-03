@@ -79,6 +79,21 @@
         <option name="VM_PARAMETERS" value="" />
         <option name="PROGRAM_PARAMETERS" value="" />
       </SHUTDOWN>
+      <EnvironmentVariables>
+        <option name="NAME" value="HIBERNATE_CONNECTION_URL" />
+        <option name="VALUE" value="jdbc:mariadb://weather_service_db:3306/root" />
+        <option name="IS_PREDEFINED" value="false" />
+      </EnvironmentVariables>
+      <EnvironmentVariables>
+        <option name="NAME" value="HIBERNATE_CONNECTION_USERNAME" />
+        <option name="VALUE" value="test" />
+        <option name="IS_PREDEFINED" value="false" />
+      </EnvironmentVariables>
+      <EnvironmentVariables>
+        <option name="NAME" value="HIBERNATE_CONNECTION_PASSWORD" />
+        <option name="VALUE" value="test" />
+        <option name="IS_PREDEFINED" value="false" />
+      </EnvironmentVariables>
     </ConfigurationWrapper>
     <method v="2">
       <option name="Make" enabled="true" />

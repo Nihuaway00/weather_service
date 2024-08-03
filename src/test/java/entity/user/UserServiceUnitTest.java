@@ -23,7 +23,7 @@ class UserServiceUnitTest {
 
     @Test
     public void shouldSuccessRegister(){
-        User user = new User.Builder().name("name").email("email@gfl@.com").build();
+        User user = User.builder().name("name").email("email@gfl@.com").build();
         user.setId(1L);
 
         when(userDaoMock.existsByEmail("email@gfl.com")).thenReturn(false);
@@ -36,7 +36,7 @@ class UserServiceUnitTest {
 
     @Test
     public void shouldThrowUserAlreadyExistsException(){
-        User user = new User.Builder().name("name").email("email@gfl@.com").build();
+        User user = User.builder().name("name").email("email@gfl@.com").build();
         user.setId(1L);
 
         when(userDaoMock.existsByEmail("email@gfl.com")).thenReturn(true);
@@ -47,7 +47,7 @@ class UserServiceUnitTest {
 
     @Test
     public void shouldThrowPersistException(){
-        User user = new User.Builder().name("name").email("email@gfl@.com").build();
+        User user = User.builder().name("name").email("email@gfl@.com").build();
         user.setId(1L);
 
         when(userDaoMock.existsByEmail("email@gfl.com")).thenReturn(false);

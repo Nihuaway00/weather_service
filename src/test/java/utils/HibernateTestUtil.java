@@ -20,8 +20,10 @@ public class HibernateTestUtil {
                 .withDatabaseName("weather_service_test")
                 .withUsername("test")
                 .withPassword("test");
-
-        sessionFactory = new Configuration().configure().buildSessionFactory();
+        mariadb.start();
+        Configuration configuration = new Configuration().configure();
+        configuration.setProperty("hibernate.connection.url", mariadb.getJdbcUrl());
+        sessionFactory = configuration.buildSessionFactory();
     }
 
     public static void stopContainer(){

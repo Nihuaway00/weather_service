@@ -8,6 +8,7 @@ import exceptions.UserAlreadyExistException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -17,24 +18,27 @@ import java.io.*;
 
 @Testcontainers
 class UserControllerIntegrationTest {
-    private UserController userController;
-    private UserService userService;
-    private UserDao userDao;
+    static UserController userController;
+    static UserService userService;
+    static UserDao userDao;
 
-
-    @BeforeEach
-    public void setUp() throws Exception {
+    @BeforeAll
+    static void setUp(){
         HibernateTestUtil.startContainerAndSetupSessionFactory();
-        HibernateTestUtil.clearDatabase();
-
         userDao = new UserDao(HibernateTestUtil.getSessionFactory());
         userService = new UserService(userDao);
         userController = new UserController(userService);
     }
 
-    @AfterAll
-    public static void afterAll(){
+    @BeforeEach
+    void beforeEach() throws Exception {
         HibernateTestUtil.clearDatabase();
+    }
+
+    @AfterAll
+    static void afterAll(){
+        HibernateTestUtil.stopContainer();
+        HibernateTestUtil.stopContainer();
     }
 
     @Test
@@ -54,7 +58,7 @@ class UserControllerIntegrationTest {
 
     @Test
     void shouldThrowUserAlreadyExistException() throws Exception {
-        User user = new User.Builder().email("email").build();
+        User user = User.builder().email("email").build();
         userDao.save(user);
 
         HttpServletRequest request = mock(HttpServletRequest.class);

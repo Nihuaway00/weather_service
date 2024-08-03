@@ -15,28 +15,28 @@ import utils.HibernateTestUtil;
 import static org.junit.jupiter.api.Assertions.*;
 
 class UserDaoUnitTest {
-    UserDao userDao;
+    static UserDao userDao;
 
     @BeforeAll
-    static void beforeAll() {
+    static void setUp() {
         HibernateTestUtil.startContainerAndSetupSessionFactory();
-        HibernateTestUtil.clearDatabase();
+        userDao = new UserDao(HibernateTestUtil.getSessionFactory());
     }
 
     @AfterAll
     static void afterAll() {
         HibernateTestUtil.stopContainer();
+        HibernateTestUtil.stopContainer();
     }
 
     @BeforeEach
-    void setUp(){
-        userDao = new UserDao(HibernateTestUtil.getSessionFactory());
+    void beforeEach(){
         HibernateTestUtil.clearDatabase();
     }
 
     @Test
     void shouldReturnUserById() {
-        User user1 = new User.Builder().name("test1").email("test1@email.com").build();
+        User user1 = User.builder().name("test1").email("test1@email.com").build();
 
         User user = userDao.save(user1);
 
@@ -51,7 +51,7 @@ class UserDaoUnitTest {
 
     @Test
     void shouldReturnUserByEmail() {
-        User user1 = new User.Builder().name("test1").email("test1@email.com").build();
+        User user1 = User.builder().name("test1").email("test1@email.com").build();
         userDao.save(user1);
 
         User resultUser = userDao.findByEmail("test1@email.com");
@@ -62,7 +62,7 @@ class UserDaoUnitTest {
     void shouldReturnTrueIfUserWithEmailExist() {
         assertFalse(userDao.existsByEmail("test1@email.com"));
 
-        User user1 = new User.Builder().name("test1").email("test1@email.com").build();
+        User user1 = User.builder().name("test1").email("test1@email.com").build();
         userDao.save(user1);
 
         assertTrue(userDao.existsByEmail("test1@email.com"));

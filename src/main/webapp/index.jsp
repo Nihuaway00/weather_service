@@ -5,9 +5,6 @@
     <title>JSP - Hello World</title>
 </head>
 <body>
-<h1><%= "Hello World!" %>
-</h1>
-<br/>
-<a href="user">user</a>
+<form:inputText name="userName" value="${user.name}" />
 </body>
-</html>§
+</html>
