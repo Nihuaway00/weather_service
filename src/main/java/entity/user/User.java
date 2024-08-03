@@ -8,7 +8,6 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import java.io.Serializable;
 
 @Entity
-@Builder
 @Table
 @Data
 @AllArgsConstructor
@@ -17,9 +16,34 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Basic(optional = false)
+
     @Column(unique = true)
     private String email;
-    @Basic(optional = false)
     private String password;
+
+    public static class builder{
+        private String email;
+        private String password;
+
+        public builder(){}
+
+        public builder email(String value){
+            this.email = value;
+            return this;
+        }
+
+        public builder password(String value) {
+            this.password = value;
+            return this;
+        }
+
+        public User build(){
+            return new User(this);
+        }
+    }
+
+    private User(builder builder){
+        this.email = builder.email;
+        this.password = builder.password;
+    }
 }

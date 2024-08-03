@@ -56,7 +56,13 @@ public class UserController extends HttpServlet {
         String result;
 
         try{
-            String body = request.getReader().readLine();
+            StringBuilder sb = new StringBuilder();
+            BufferedReader reader = request.getReader();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                sb.append(line);
+            }
+            String body = sb.toString();
 
             ObjectMapper objectMapper = new ObjectMapper();
             UserRegistrationDto dto = objectMapper.readValue(body, UserRegistrationDto.class);

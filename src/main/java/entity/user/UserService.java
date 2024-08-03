@@ -12,7 +12,7 @@ public class UserService {
     }
 
     public void register(UserRegistrationDto dto) throws UserAlreadyExistException, UserDaoException {
-        User user = User.builder()
+        User user = new User.builder()
                 .email(dto.getEmail())
                 .password(dto.getPassword())
                 .build();

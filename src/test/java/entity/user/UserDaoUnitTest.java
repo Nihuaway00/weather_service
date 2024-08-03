@@ -37,7 +37,7 @@ class UserDaoUnitTest {
 
     @Test
     void shouldReturnUserById() throws UserAlreadyExistException {
-        User user1 = User.builder().email("test1@email.com").build();
+        User user1 = new User.builder().email("test1@email.com").password("fldsmfls").build();
 
         User user = userDao.save(user1);
 
@@ -52,7 +52,7 @@ class UserDaoUnitTest {
 
     @Test
     void shouldReturnUserByEmail() throws UserAlreadyExistException {
-        User user1 = User.builder().email("test1@email.com").build();
+        User user1 = new User.builder().email("test1@email.com").password("fmldsmfle").build();
         userDao.save(user1);
 
         User resultUser = userDao.findByEmail("test1@email.com");
@@ -63,7 +63,7 @@ class UserDaoUnitTest {
     void shouldReturnTrueIfUserWithEmailExist() throws UserAlreadyExistException {
         assertFalse(userDao.existsByEmail("test1@email.com"));
 
-        User user1 = User.builder().email("test1@email.com").build();
+        User user1 = new User.builder().email("test1@email.com").password("fl,lsf").build();
         userDao.save(user1);
 
         assertTrue(userDao.existsByEmail("test1@email.com"));
