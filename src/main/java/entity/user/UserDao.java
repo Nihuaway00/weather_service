@@ -1,10 +1,12 @@
 package entity.user;
 
+import exceptions.UserAlreadyExistException;
 import exceptions.UserDaoException;
 import exceptions.UserWithEmailNotExists;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+import org.hibernate.exception.ConstraintViolationException;
 import org.hibernate.query.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,7 +37,7 @@ public class UserDao {
     }
 
 
-    public User save(User user) throws UserDaoException {
+    public User save(User user) throws UserAlreadyExistException, UserDaoException {
         Transaction transaction = null;
         Session session = null;
         try{
@@ -44,16 +46,12 @@ public class UserDao {
             session.persist(user);
             transaction.commit();
             return user;
+        } catch (ConstraintViolationException e){
+            throw new UserAlreadyExistException(e.getMessage(), e);
         } catch (Exception e){
-            if (transaction != null) {
-                try {
-                    transaction.rollback();
-                } catch (RuntimeException re) {
-                    log.error("Could not roll back transaction", re);
-                }
-            }
+            if (transaction != null) transaction.rollback();
             throw new UserDaoException("Error with saving user", e);
-        }finally {
+        } finally {
             if (session != null && session.isOpen()) {
                 session.close();
             }

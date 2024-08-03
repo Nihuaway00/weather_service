@@ -1,5 +1,6 @@
 package entity.user;
 
+import exceptions.UserAlreadyExistException;
 import exceptions.UserDaoException;
 import exceptions.UserWithEmailNotExists;
 import org.hibernate.Session;
@@ -35,7 +36,7 @@ class UserDaoUnitTest {
     }
 
     @Test
-    void shouldReturnUserById() {
+    void shouldReturnUserById() throws UserAlreadyExistException {
         User user1 = new User.Builder().name("test1").email("test1@email.com").build();
 
         User user = userDao.save(user1);
@@ -50,7 +51,7 @@ class UserDaoUnitTest {
     }
 
     @Test
-    void shouldReturnUserByEmail() {
+    void shouldReturnUserByEmail() throws UserAlreadyExistException {
         User user1 = new User.Builder().name("test1").email("test1@email.com").build();
         userDao.save(user1);
 
@@ -59,7 +60,7 @@ class UserDaoUnitTest {
     }
 
     @Test
-    void shouldReturnTrueIfUserWithEmailExist() {
+    void shouldReturnTrueIfUserWithEmailExist() throws UserAlreadyExistException {
         assertFalse(userDao.existsByEmail("test1@email.com"));
 
         User user1 = new User.Builder().name("test1").email("test1@email.com").build();

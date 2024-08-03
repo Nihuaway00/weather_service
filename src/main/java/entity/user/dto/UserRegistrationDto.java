@@ -1,4 +1,4 @@
-package entity.user;
+package entity.user.dto;
 
 import lombok.*;
 
@@ -6,7 +6,7 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserRegistrationRequest {
+public class UserRegistrationDto {
     private String name;
     private String email;
     private String password;

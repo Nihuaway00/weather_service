@@ -1,5 +1,6 @@
 package entity.user;
 
+import entity.user.dto.UserRegistrationDto;
 import exceptions.UserAlreadyExistException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -16,7 +17,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringReader;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -60,7 +60,7 @@ class UserControllerUnitTest {
 
         when(request.getPathInfo()).thenReturn("/register");
         when(request.getReader()).thenReturn(new BufferedReader(new StringReader(data)));
-        doThrow(new UserAlreadyExistException("Пользователь с такой почтой уже существует")).when(userService).register(any(UserRegistrationRequest.class));
+        doThrow(new UserAlreadyExistException("Пользователь с такой почтой уже существует")).when(userService).register(any(UserRegistrationDto.class));
 
         userController.doPost(request, response);
 

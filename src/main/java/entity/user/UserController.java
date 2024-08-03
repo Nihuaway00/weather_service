@@ -2,8 +2,9 @@ package entity.user;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import entity.user.dto.UserRegistrationDto;
 import exceptions.UserAlreadyExistException;
-import exceptions.UserSavingException;
+import exceptions.UserDaoException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -64,7 +65,7 @@ public class UserController extends HttpServlet {
             String requestBody = sb.toString();
 
             ObjectMapper objectMapper = new ObjectMapper();
-            UserRegistrationRequest dto = objectMapper.readValue(requestBody, UserRegistrationRequest.class);
+            UserRegistrationDto dto = objectMapper.readValue(requestBody, UserRegistrationDto.class);
 
             userService.register(dto);
 
@@ -73,7 +74,7 @@ public class UserController extends HttpServlet {
         } catch (UserAlreadyExistException e) {
             result = "Такая почта уже используется";
             response.setStatus(HttpServletResponse.SC_CONFLICT);
-        } catch (UserSavingException e) {
+        } catch (UserDaoException e) {
             result = "Ошибка на сервере: " + e.getMessage();
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         } catch (JsonProcessingException e){
