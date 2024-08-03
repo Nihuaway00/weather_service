@@ -54,7 +54,7 @@ class UserControllerIntegrationTest {
 
     @Test
     void shouldThrowUserAlreadyExistException() throws Exception {
-        User user = new User.Builder().email("email").build();
+        User user = User.builder().email("email").build();
         userDao.save(user);
 
         HttpServletRequest request = mock(HttpServletRequest.class);

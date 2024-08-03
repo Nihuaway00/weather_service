@@ -22,12 +22,12 @@ class UserServiceUnitTest {
 
     @Test
     public void shouldSuccessRegister() throws UserAlreadyExistException {
-        User user = new User.Builder().name("name").email("email@gfl@.com").build();
+        User user = User.builder().email("email@gfl@.com").build();
         user.setId(1L);
 
         when(userDaoMock.save(any(User.class))).thenReturn(user);
 
-        UserRegistrationDto dto = UserRegistrationDto.builder().name("name").email("email@gfl.com").password("123").build();
+        UserRegistrationDto dto = UserRegistrationDto.builder().email("email@gfl.com").password("123").build();
 
         assertDoesNotThrow(() -> userService.register(dto));
     }

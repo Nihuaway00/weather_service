@@ -9,6 +9,6 @@ public class Main {
         UserDao userDao = new UserDao();
 
         UserService userService = new UserService(userDao);
-        userService.register(UserRegistrationDto.builder().email("fdsfs2").name("fldk").password("fmk3fi3").build());
+        userService.register(UserRegistrationDto.builder().email("fdsfs2").password("fmk3fi3").build());
     }
 }

@@ -8,6 +8,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import java.io.Serializable;
 
 @Entity
+@Builder
 @Table
 @Data
 @AllArgsConstructor
