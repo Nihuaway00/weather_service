@@ -11,18 +11,11 @@ public class UserService {
         this.userDao = userDao;
     }
 
-    public void register(UserRegistrationRequest dto) throws UserAlreadyExistException, UserSavingException {
-        try {
-            if (userDao.existsByEmail(dto.getEmail())) {
-                throw new UserAlreadyExistException("Пользователь с такой почтой уже существует");
-            }
-            User user = User.builder()
-                    .name(dto.getName()).email(dto.getEmail())
-                    .build();
+    public User register(UserRegistrationRequest dto) throws UserAlreadyExistException, UserSavingException {
+        User user = User.builder()
+                .email(dto.getEmail())
+                .build();
 
-            userDao.save(user);
-        } catch (UserDaoException e) {
-            throw new UserSavingException("Пользователь не может быть сохранен");
-        }
+        return userDao.save(user);
     }
 }

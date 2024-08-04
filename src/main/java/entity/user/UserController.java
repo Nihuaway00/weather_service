@@ -4,15 +4,21 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import exceptions.UserAlreadyExistException;
 import exceptions.UserSavingException;
+import io.jsonwebtoken.Jwt;
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.Jwts;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.*;
+import utils.JwtUtil;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.time.Instant;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.Map;
+import java.util.Optional;
 
 @WebServlet(name="userController", value = "/user/*")
 public class UserController extends HttpServlet {
@@ -26,16 +32,19 @@ public class UserController extends HttpServlet {
         this.userService = userService;
     }
 
-    @Override
-    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        response.setContentType("text/html");
-
-        // Hello
-        PrintWriter out = response.getWriter();
-        out.println("<html><body>");
-        out.println("<h1>" + "heeloop" + "</h1>");
-        out.println("</body></html>");
-    }
+//    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+//        Optional<Cookie> cookie = Arrays.stream(request.getCookies()).findFirst();
+//
+//        response.setContentType("text/html");
+//        PrintWriter out = response.getWriter();
+//
+//        if(cookie.isPresent()){
+//            Cookie userCookie = cookie.get();
+//            String token = userCookie.getValue();
+//            Jwt<?, ?> jwt = JwtUtil.parseToken(token);
+//        }
+//
+//    }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -55,18 +64,19 @@ public class UserController extends HttpServlet {
         String result;
 
         try{
-            StringBuilder sb = new StringBuilder();
-            BufferedReader reader = request.getReader();
-            String line;
-            while ((line = reader.readLine()) != null) {
-                sb.append(line);
-            }
-            String requestBody = sb.toString();
+            String requestBody = request.getReader().readLine();
 
             ObjectMapper objectMapper = new ObjectMapper();
             UserRegistrationRequest dto = objectMapper.readValue(requestBody, UserRegistrationRequest.class);
 
-            userService.register(dto);
+            User registeredUser = userService.register(dto);
+
+            Map<String, ?> claims = Map.of("id", registeredUser.getId(),"email", dto.getEmail());
+            String jwt = JwtUtil.generateToken(claims, Date.from(Instant.ofEpochSecond(10L)));
+
+            Cookie jwtCookie = new Cookie("jwt", jwt);
+            jwtCookie.setHttpOnly(true);
+            response.addCookie(jwtCookie);
 
             result = "Вы зареганы";
             response.setStatus(HttpServletResponse.SC_CREATED);
@@ -84,5 +94,9 @@ public class UserController extends HttpServlet {
         response.setContentType("text/html");
         PrintWriter out = response.getWriter();
         out.println(result);
+    }
+
+    public void login(HttpServletRequest request, HttpServletResponse response){
+
     }
 }

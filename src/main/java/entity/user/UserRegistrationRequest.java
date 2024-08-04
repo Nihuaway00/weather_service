@@ -7,7 +7,6 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserRegistrationRequest {
-    private String name;
     private String email;
     private String password;
 }

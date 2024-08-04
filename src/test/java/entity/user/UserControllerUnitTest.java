@@ -1,9 +1,11 @@
 package entity.user;
 
 import exceptions.UserAlreadyExistException;
+import exceptions.UserSavingException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -44,19 +46,20 @@ class UserControllerUnitTest {
     }
 
     @Test
-    void shouldSuccessRegister() throws ServletException, IOException {
+    void shouldSuccessRegister() throws ServletException, IOException, UserAlreadyExistException, UserSavingException {
         when(request.getPathInfo()).thenReturn("/register");
-        String data = "{\"name\": \"name\", \"email\": \"email\", \"password\": \"123\"}";
+        String data = "{\"email\": \"email\", \"password\": \"123\"}";
         when(request.getReader()).thenReturn(new BufferedReader(new StringReader(data)));
+        when(userService.register(any(UserRegistrationRequest.class)))
+                .thenReturn(User.builder().id(1L).email("email").password("123").build());
 
         userController.doPost(request, response);
-
         verify(response).setStatus(HttpServletResponse.SC_CREATED);
     }
 
     @Test
     void shouldThrowUserAlreadyExist() throws Exception {
-        String data = "{\"name\": \"name\", \"email\": \"email\", \"password\": \"123\"}";
+        String data = "{\"email\": \"email\", \"password\": \"123\"}";
 
         when(request.getPathInfo()).thenReturn("/register");
         when(request.getReader()).thenReturn(new BufferedReader(new StringReader(data)));

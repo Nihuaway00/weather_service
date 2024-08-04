@@ -22,38 +22,14 @@ class UserServiceUnitTest {
     private UserService userService;
 
     @Test
-    public void shouldSuccessRegister(){
-        User user = User.builder().name("name").email("email@gfl@.com").build();
+    public void shouldSuccessRegister() throws UserAlreadyExistException {
+        User user = User.builder().email("email@gfl@.com").password("123").build();
         user.setId(1L);
 
-        when(userDaoMock.existsByEmail("email@gfl.com")).thenReturn(false);
         when(userDaoMock.save(any(User.class))).thenReturn(user);
 
-        UserRegistrationRequest dto = UserRegistrationRequest.builder().name("name").email("email@gfl.com").password("123").build();
+        UserRegistrationRequest dto = UserRegistrationRequest.builder().email("email@gfl.com").password("123").build();
 
         assertDoesNotThrow(() -> userService.register(dto));
-    }
-
-    @Test
-    public void shouldThrowUserAlreadyExistsException(){
-        User user = User.builder().name("name").email("email@gfl@.com").build();
-        user.setId(1L);
-
-        when(userDaoMock.existsByEmail("email@gfl.com")).thenReturn(true);
-
-        UserRegistrationRequest dto = UserRegistrationRequest.builder().name("name").email("email@gfl.com").password("123").build();
-        assertThrows(UserAlreadyExistException.class, () -> userService.register(dto));
-    }
-
-    @Test
-    public void shouldThrowPersistException(){
-        User user = User.builder().name("name").email("email@gfl@.com").build();
-        user.setId(1L);
-
-        when(userDaoMock.existsByEmail("email@gfl.com")).thenReturn(false);
-        when(userDaoMock.save(any(User.class))).thenThrow(UserDaoException.class);
-
-        UserRegistrationRequest dto = UserRegistrationRequest.builder().name("name").email("email@gfl.com").password("123").build();
-        assertThrows(UserSavingException.class, () -> userService.register(dto));
     }
 }

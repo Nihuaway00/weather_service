@@ -1,11 +1,11 @@
 package entity.user;
 
+import com.sun.istack.NotNull;
 import lombok.*;
 
 import jakarta.persistence.*;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 
-import java.io.Serializable;
+import javax.validation.constraints.NotBlank;
 
 @Entity
 @Table
@@ -18,9 +18,9 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;
-
-    @Basic
     @Column(unique = true)
     private String email;
+
+    @NotBlank
+    private String password;
 }

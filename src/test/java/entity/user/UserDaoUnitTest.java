@@ -10,11 +10,13 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.MariaDBContainer;
+import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 import utils.HibernateTestUtil;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@Testcontainers
 class UserDaoUnitTest {
     static UserDao userDao;
 
@@ -37,12 +39,12 @@ class UserDaoUnitTest {
 
     @Test
     void shouldReturnUserById() throws UserAlreadyExistException {
-        User user1 = User.builder().name("test1").email("test1@email.com").build();
+        User user1 = User.builder().password("test1").email("test1@email.com").build();
 
         User user = userDao.save(user1);
 
         User resultUser = userDao.findById(user.getId());
-        assertEquals(resultUser.getName(), user1.getName());
+        assertEquals(resultUser.getEmail(), user1.getEmail());
     }
 
     @Test
@@ -52,18 +54,18 @@ class UserDaoUnitTest {
 
     @Test
     void shouldReturnUserByEmail() throws UserAlreadyExistException {
-        User user1 = User.builder().name("test1").email("test1@email.com").build();
+        User user1 = User.builder().password("test1").email("test1@email.com").build();
         userDao.save(user1);
 
         User resultUser = userDao.findByEmail("test1@email.com");
-        assertEquals(resultUser.getName(), user1.getName());
+        assertEquals(resultUser.getEmail(), user1.getEmail());
     }
 
     @Test
     void shouldReturnTrueIfUserWithEmailExist() throws UserAlreadyExistException {
         assertFalse(userDao.existsByEmail("test1@email.com"));
 
-        User user1 = User.builder().name("test1").email("test1@email.com").build();
+        User user1 = User.builder().password("test1").email("test1@email.com").build();
         userDao.save(user1);
 
         assertTrue(userDao.existsByEmail("test1@email.com"));

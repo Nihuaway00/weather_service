@@ -5,8 +5,10 @@ import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.*;
 
 import exceptions.UserAlreadyExistException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -47,8 +49,11 @@ class UserControllerIntegrationTest {
         HttpServletResponse response = mock(HttpServletResponse.class);
         StringWriter responseWriter = new StringWriter();
 
+        HttpSession session = mock(HttpSession.class);
+        when(request.getSession()).thenReturn(session);
+
         when(request.getPathInfo()).thenReturn("/register");
-        String data = "{\"name\": \"name\", \"email\": \"email\", \"password\": \"123\"}";
+        String data = "{\"email\": \"email\", \"password\": \"123\"}";
         when(request.getReader()).thenReturn(new BufferedReader(new StringReader(data)));
         when(response.getWriter()).thenReturn(new PrintWriter(responseWriter));
 
@@ -66,7 +71,7 @@ class UserControllerIntegrationTest {
         StringWriter responseWriter = new StringWriter();
 
         when(request.getPathInfo()).thenReturn("/register");
-        String data = "{\"name\": \"name\", \"email\": \"email\", \"password\": \"123\"}";
+        String data = "{\"email\": \"email\", \"password\": \"123\"}";
         when(request.getReader()).thenReturn(new BufferedReader(new StringReader(data)));
         when(response.getWriter()).thenReturn(new PrintWriter(responseWriter));
 
