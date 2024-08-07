@@ -21,15 +21,13 @@ import java.io.*;
 @Testcontainers
 class UserControllerIntegrationTest {
     static UserController userController;
-    static UserService userService;
     static UserDao userDao;
 
     @BeforeAll
     static void setUp(){
         HibernateTestUtil.startContainerAndSetupSessionFactory();
         userDao = new UserDao(HibernateTestUtil.getSessionFactory());
-        userService = new UserService(userDao);
-        userController = new UserController(userService);
+        userController = new UserController(userDao);
     }
 
     @BeforeEach

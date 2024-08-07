@@ -3,10 +3,8 @@ package entity.user;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import exceptions.UserAlreadyExistException;
+import exceptions.UserDaoException;
 import exceptions.UserSavingException;
-import io.jsonwebtoken.Jwt;
-import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.Jwts;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
@@ -15,21 +13,19 @@ import utils.JwtUtil;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.time.Instant;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.Map;
-import java.util.Optional;
 
-@WebServlet(name="userController", value = "/user/*")
+@WebServlet(name = "userController", value = "/user/*")
 public class UserController extends HttpServlet {
-    private UserService userService;
+    private final UserDao userDao;
 
     public UserController() {
-        this.userService = new UserService(new UserDao());
+        this.userDao = new UserDao();
     }
 
-    public UserController(UserService userService){
-        this.userService = userService;
+    public UserController(UserDao userDao) {
+        this.userDao = userDao;
     }
 
 
@@ -56,15 +52,19 @@ public class UserController extends HttpServlet {
     public void register(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String result;
 
-        try{
+        try {
             String requestBody = request.getReader().readLine();
 
             ObjectMapper objectMapper = new ObjectMapper();
             UserRegistrationRequest dto = objectMapper.readValue(requestBody, UserRegistrationRequest.class);
 
-            User registeredUser = userService.register(dto);
+            User user = User.builder()
+                    .email(dto.getEmail())
+                    .password(dto.getPassword())
+                    .build();
+            User registeredUser = userDao.save(user);
 
-            Map<String, ?> claims = Map.of("id", registeredUser.getId(),"email", dto.getEmail());
+            Map<String, ?> claims = Map.of("id", registeredUser.getId(), "email", dto.getEmail());
             String jwt = JwtUtil.generateToken(claims, Date.from(Instant.ofEpochSecond(10L)));
 
             Cookie jwtCookie = new Cookie("jwt", jwt);
@@ -76,10 +76,10 @@ public class UserController extends HttpServlet {
         } catch (UserAlreadyExistException e) {
             result = "Такая почта уже используется";
             response.setStatus(HttpServletResponse.SC_CONFLICT);
-        } catch (UserSavingException e) {
-            result = "Ошибка на сервере: " + e.getMessage();
+        } catch (UserDaoException e) {
+            result = "Ошибка при сохранении пользователя: " + e.getMessage();
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-        } catch (JsonProcessingException e){
+        } catch (JsonProcessingException e) {
             result = "Ошибка на сервере при преобразовании в json: " + e.getMessage();
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
@@ -89,11 +89,11 @@ public class UserController extends HttpServlet {
         out.println(result);
     }
 
-    public void login(HttpServletRequest request, HttpServletResponse response){
+    public void login(HttpServletRequest request, HttpServletResponse response) {
 
     }
 
-    public void logout(HttpServletRequest request, HttpServletResponse response){
+    public void logout(HttpServletRequest request, HttpServletResponse response) {
 
     }
 }

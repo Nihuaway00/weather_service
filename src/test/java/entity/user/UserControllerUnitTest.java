@@ -25,7 +25,7 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class UserControllerUnitTest {
     @Mock
-    private UserService userService;
+    private UserDao userDaoMock;
 
     @InjectMocks
     private UserController userController;
@@ -50,7 +50,7 @@ class UserControllerUnitTest {
         when(request.getPathInfo()).thenReturn("/register");
         String data = "{\"email\": \"email\", \"password\": \"123\"}";
         when(request.getReader()).thenReturn(new BufferedReader(new StringReader(data)));
-        when(userService.register(any(UserRegistrationRequest.class)))
+        when(userDaoMock.save(any(User.class)))
                 .thenReturn(User.builder().id(1L).email("email").password("123").build());
 
         userController.doPost(request, response);
@@ -63,7 +63,7 @@ class UserControllerUnitTest {
 
         when(request.getPathInfo()).thenReturn("/register");
         when(request.getReader()).thenReturn(new BufferedReader(new StringReader(data)));
-        doThrow(new UserAlreadyExistException("Пользователь с такой почтой уже существует")).when(userService).register(any(UserRegistrationRequest.class));
+        doThrow(new UserAlreadyExistException("Пользователь с такой почтой уже существует")).when(userDaoMock).save(any(User.class));
 
         userController.doPost(request, response);
 

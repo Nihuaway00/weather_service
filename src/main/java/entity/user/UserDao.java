@@ -56,7 +56,7 @@ public class UserDao {
                     log.error("Could not roll back transaction", re);
                 }
             }
-            throw new UserDaoException("Error with saving user", e);
+            throw new UserDaoException("Ошибка при сохранении пользователя", e);
         }finally {
             if (session != null && session.isOpen()) {
                 session.close();
