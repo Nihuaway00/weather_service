@@ -18,7 +18,5 @@
         <!-- Drop and re-create the database schema on startup -->
         <property name="hibernate.hbm2ddl.auto">update</property>
 
-        <mapping class="entity.user.User"/>
-        <mapping class="entity.location.Location"/>
     </session-factory>
 </hibernate-configuration>
