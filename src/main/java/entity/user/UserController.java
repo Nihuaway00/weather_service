@@ -32,19 +32,6 @@ public class UserController extends HttpServlet {
         this.userService = userService;
     }
 
-//    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-//        Optional<Cookie> cookie = Arrays.stream(request.getCookies()).findFirst();
-//
-//        response.setContentType("text/html");
-//        PrintWriter out = response.getWriter();
-//
-//        if(cookie.isPresent()){
-//            Cookie userCookie = cookie.get();
-//            String token = userCookie.getValue();
-//            Jwt<?, ?> jwt = JwtUtil.parseToken(token);
-//        }
-//
-//    }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -53,6 +40,12 @@ public class UserController extends HttpServlet {
         switch (action) {
             case "register":
                 register(request, response);
+                break;
+            case "login":
+                login(request, response);
+                break;
+            case "logout":
+                logout(request, response);
                 break;
             default:
                 response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid action");
@@ -97,6 +90,10 @@ public class UserController extends HttpServlet {
     }
 
     public void login(HttpServletRequest request, HttpServletResponse response){
+
+    }
+
+    public void logout(HttpServletRequest request, HttpServletResponse response){
 
     }
 }
