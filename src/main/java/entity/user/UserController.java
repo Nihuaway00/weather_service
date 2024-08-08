@@ -2,7 +2,6 @@ package entity.user;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import entity.user.dto.UserRegistrationDto;
 import exceptions.UserAlreadyExistException;
 import exceptions.UserDaoException;
 import jakarta.servlet.ServletException;
@@ -56,15 +55,10 @@ public class UserController extends HttpServlet {
             String requestBody = request.getReader().readLine();
 
             ObjectMapper objectMapper = new ObjectMapper();
-            UserRegistrationDto dto = objectMapper.readValue(requestBody, UserRegistrationDto.class);
-
-            User user = User.builder()
-                    .email(dto.getEmail())
-                    .password(dto.getPassword())
-                    .build();
+            User user = objectMapper.readValue(requestBody, User.class);
             User registeredUser = userDao.save(user);
 
-            Map<String, ?> claims = Map.of("id", registeredUser.getId(), "email", dto.getEmail());
+            Map<String, ?> claims = Map.of("id", registeredUser.getId(), "email", user.getEmail());
             String jwt = JwtUtil.generateToken(claims, Date.from(Instant.ofEpochSecond(10L)));
 
             Cookie jwtCookie = new Cookie("jwt", jwt);
