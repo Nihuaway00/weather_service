@@ -76,4 +76,46 @@ class UserControllerIntegrationTest {
         userController.doPost(request, response);
         verify(response).setStatus(HttpServletResponse.SC_CONFLICT);
     }
+
+    @Test
+    void shouldSuccessLogin() throws Exception {
+        User user = User.builder().email("email222@gmail.com").password("GGG111kg").build();
+        userDao.save(user);
+
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        HttpServletResponse response = mock(HttpServletResponse.class);
+        StringWriter responseWriter = new StringWriter();
+
+        HttpSession session = mock(HttpSession.class);
+        when(request.getSession()).thenReturn(session);
+
+        when(request.getPathInfo()).thenReturn("/login");
+        String data = "{\"email\": \"email222@gmail.com\", \"password\": \"GGG111kg\"}";
+        when(request.getReader()).thenReturn(new BufferedReader(new StringReader(data)));
+        when(response.getWriter()).thenReturn(new PrintWriter(responseWriter));
+
+        userController.doPost(request, response);
+        verify(response).setStatus(HttpServletResponse.SC_OK);
+    }
+
+    @Test
+    void shouldThrowInvalidPasswordException() throws Exception {
+        User user = User.builder().email("email222@gmail.com").password("GGG111kg").build();
+        userDao.save(user);
+
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        HttpServletResponse response = mock(HttpServletResponse.class);
+        StringWriter responseWriter = new StringWriter();
+
+        HttpSession session = mock(HttpSession.class);
+        when(request.getSession()).thenReturn(session);
+
+        when(request.getPathInfo()).thenReturn("/login");
+        String data = "{\"email\": \"email222@gmail.com\", \"password\": \"invalidPass\"}";
+        when(request.getReader()).thenReturn(new BufferedReader(new StringReader(data)));
+        when(response.getWriter()).thenReturn(new PrintWriter(responseWriter));
+
+        userController.doPost(request, response);
+        verify(response).setStatus(HttpServletResponse.SC_BAD_REQUEST);
+    }
 }
