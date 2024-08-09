@@ -124,22 +124,16 @@ public class UserController extends HttpServlet {
 
     public void logout(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String result;
-        Cookie[] cookies = request.getCookies();
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if (cookie.getName().equals("token")) {
-                    // Установить время жизни куки в 0, чтобы удалить его
-                    cookie.setMaxAge(0);
-                    cookie.setPath("/"); // Необходимо установить путь, иначе куки не будут удалены
-                    response.addCookie(cookie);
-                }
-            }
+        HttpSession session = request.getSession();
+
+        if(!session.isNew()){
             result = "Вы вышли";
-        } else{
-            result = "Вы и не входили...";
+        }
+        else{
+            result = "Вы и не входили";
         }
 
-
+        session.invalidate();
         response.setContentType("text/html");
         PrintWriter out = response.getWriter();
         out.println(result);
