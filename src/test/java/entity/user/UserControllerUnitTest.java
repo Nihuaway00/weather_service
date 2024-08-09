@@ -12,6 +12,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import utils.JwtUtil;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -36,6 +37,9 @@ class UserControllerUnitTest {
     @Mock
     private HttpServletResponse response;
 
+    @Mock
+    private HttpSession session;
+
 
     private PrintWriter writer;
 
@@ -52,6 +56,7 @@ class UserControllerUnitTest {
         when(request.getReader()).thenReturn(new BufferedReader(new StringReader(data)));
         when(userDaoMock.save(any(User.class)))
                 .thenReturn(User.builder().id(1L).email("email").password("123").build());
+        when(request.getSession()).thenReturn(session);
 
         userController.doPost(request, response);
         verify(response).setStatus(HttpServletResponse.SC_CREATED);
@@ -68,5 +73,34 @@ class UserControllerUnitTest {
         userController.doPost(request, response);
 
         verify(response).setStatus(HttpServletResponse.SC_CONFLICT);
+    }
+
+    @Test
+    void shouldSuccessLogin() throws ServletException, IOException, UserAlreadyExistException, UserSavingException {
+        when(request.getPathInfo()).thenReturn("/login");
+        String data = "{\"email\": \"email\", \"password\": \"123\"}";
+
+        when(request.getReader()).thenReturn(new BufferedReader(new StringReader(data)));
+        when(userDaoMock.findByEmail(anyString()))
+                .thenReturn(User.builder().id(1L).email("email").password("123").build());
+        when(request.getSession()).thenReturn(session);
+
+        userController.doPost(request, response);
+
+        verify(response).setStatus(HttpServletResponse.SC_OK);
+    }
+
+    @Test
+    void shouldThrowInvalidPasswordException() throws ServletException, IOException, UserAlreadyExistException, UserSavingException {
+        when(request.getPathInfo()).thenReturn("/login");
+        String data = "{\"email\": \"email\", \"password\": \"\"}";
+
+        when(request.getReader()).thenReturn(new BufferedReader(new StringReader(data)));
+        when(userDaoMock.findByEmail(anyString()))
+                .thenReturn(User.builder().id(1L).email("email").password("truePass").build());
+
+        userController.doPost(request, response);
+
+        verify(response).setStatus(HttpServletResponse.SC_BAD_REQUEST);
     }
 }

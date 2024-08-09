@@ -4,6 +4,7 @@ import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwt;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.SignatureException;
 import lombok.Getter;
 
 import javax.crypto.SecretKey;
@@ -32,5 +33,33 @@ public class JwtUtil {
                 .verifyWith(JwtUtil.getKey())
                 .build()
                 .parse(token);
+    }
+
+    public static boolean validateToken(String token) {
+        try{
+            Jwts.parser()
+                    .verifyWith(JwtUtil.getKey())
+                    .build()
+                    .parse(token);
+
+            return true;
+        }catch (SignatureException e) {
+            // Некорректная подпись
+            System.out.println("Некорректная подпись");
+        } catch (io.jsonwebtoken.ExpiredJwtException e) {
+            // Истек срок действия токена
+            System.out.println("Истек срок действия токена");
+        } catch (io.jsonwebtoken.MalformedJwtException e) {
+            // Некорректный JWT
+            System.out.println("Некорректный JWT");
+        } catch (io.jsonwebtoken.UnsupportedJwtException e) {
+            // Неподдерживаемый JWT
+            System.out.println("Неподдерживаемый JWT");
+        } catch (IllegalArgumentException e) {
+            // Пустой или некорректный токен
+            System.out.println("Пустой или некорректный токен.");
+        }
+
+        return false;
     }
 }
