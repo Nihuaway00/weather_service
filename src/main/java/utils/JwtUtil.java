@@ -26,7 +26,8 @@ public class JwtUtil {
                 .compact();
     }
 
-    public static Jwt<?, ?> parseToken(String token) throws ExpiredJwtException, UnsupportedJwtException, MalformedJwtException, SignatureException, IllegalArgumentException {
+    public static Jwt<?, ?> parseToken(String token)
+            throws ExpiredJwtException, UnsupportedJwtException, MalformedJwtException, SignatureException, IllegalArgumentException {
         return Jwts.parser()
                 .verifyWith(JwtUtil.getKey())
                 .build()
