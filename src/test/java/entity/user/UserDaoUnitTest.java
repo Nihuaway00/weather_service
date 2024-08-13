@@ -2,16 +2,12 @@ package entity.user;
 
 import exceptions.UserAlreadyExistException;
 import exceptions.UserDaoException;
-import exceptions.UserWithEmailNotExists;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
+import exceptions.UserNotExists;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.testcontainers.containers.MariaDBContainer;
 import org.testcontainers.junit.jupiter.Testcontainers;
-import org.testcontainers.utility.DockerImageName;
 import utils.HibernateTestUtil;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -29,7 +25,6 @@ class UserDaoUnitTest {
     @AfterAll
     static void afterAll() {
         HibernateTestUtil.stopContainer();
-        HibernateTestUtil.stopContainer();
     }
 
     @BeforeEach
@@ -38,7 +33,7 @@ class UserDaoUnitTest {
     }
 
     @Test
-    void shouldReturnUserById() throws UserAlreadyExistException {
+    void shouldReturnUserById() throws UserAlreadyExistException, UserNotExists {
         User user1 = User.builder().password("test1").email("test1@email.com").build();
 
         User user = userDao.save(user1);
@@ -48,7 +43,7 @@ class UserDaoUnitTest {
     }
 
     @Test
-    void shouldReturnNull() {
+    void shouldReturnNull() throws UserNotExists {
         assertNull(userDao.findById(1L));
     }
 

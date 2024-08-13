@@ -2,7 +2,7 @@ package entity.user;
 
 import exceptions.UserAlreadyExistException;
 import exceptions.UserDaoException;
-import exceptions.UserWithEmailNotExists;
+import exceptions.UserNotExists;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -13,8 +13,6 @@ import org.slf4j.LoggerFactory;
 import utils.HibernateUtil;
 
 import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
 
 public class UserDao {
     private static Logger log = LoggerFactory.getLogger(UserDao.class);
@@ -28,11 +26,11 @@ public class UserDao {
         this.sessionFactory = sessionFactory;
     }
 
-    public User findById(Long id) {
+    public User findById(Long id) throws UserNotExists {
         try(Session session = sessionFactory.openSession()){
             return session.get(User.class, id);
         }catch (Exception e){
-            throw new UserDaoException("Error with getting user", e);
+            throw new UserNotExists("Error with getting user", e);
         }
     }
 
@@ -69,7 +67,7 @@ public class UserDao {
             Query<User> query = session.createQuery("FROM User U WHERE U.email = :email", User.class);
             query.setParameter("email", email);
             List<User> result = query.list();
-            return result.stream().findFirst().orElseThrow(() -> new UserWithEmailNotExists("Пользователь с такой почтой не найден: " + email));
+            return result.stream().findFirst().orElseThrow(() -> new UserNotExists("Пользователь с такой почтой не найден: " + email));
         } catch (Exception e) {
             log.error("Ошибка при поиске пользователя с email: " + email, e);
             throw new UserDaoException("Ошибка при поиске пользователя с email: " + email, e);

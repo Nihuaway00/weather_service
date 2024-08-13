@@ -10,6 +10,7 @@ import lombok.Getter;
 import javax.crypto.SecretKey;
 import java.time.Instant;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 public class JwtUtil {
@@ -61,5 +62,13 @@ public class JwtUtil {
         }
 
         return false;
+    }
+
+    public static String parsePayloadToJson(String payload){
+        payload = payload.replace("{", "{\"");
+        payload = payload.replace("}", "\"}");
+        payload = payload.replace(", ", "\", \"");
+        payload = payload.replace("=", "\": \"");
+        return payload;
     }
 }

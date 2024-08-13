@@ -63,8 +63,9 @@ public class UserController extends HttpServlet {
             User user = objectMapper.readValue(requestBody, User.class);
             User registeredUser = userDao.save(user);
 
-            Map<String, ?> claims = Map.of("id", registeredUser.getId(), "email", user.getEmail());
-            String jwt = JwtUtil.generateToken(claims, Date.from(Instant.ofEpochSecond(10L)));
+            UserPayloadDto payload = new UserPayloadDto(registeredUser.getId(), registeredUser.getEmail());
+            Map<String, Object> claims = objectMapper.convertValue(payload, Map.class);
+            String jwt = JwtUtil.generateToken(claims, Date.from(Instant.now().plusSeconds(60L)));
 
             HttpSession session = request.getSession();
             session.setAttribute("token", jwt);
@@ -104,8 +105,9 @@ public class UserController extends HttpServlet {
                 throw new InvalidPasswordException("Неверный пароль");
             }
 
-            Map<String, ?> claims = Map.of("id", userFromDB.getId(), "email", user.getEmail());
-            String jwt = JwtUtil.generateToken(claims, Date.from(Instant.ofEpochSecond(10L)));
+            UserPayloadDto payload = new UserPayloadDto(userFromDB.getId(), userFromDB.getEmail());
+            Map<String, Object> claims = objectMapper.convertValue(payload, Map.class);
+            String jwt = JwtUtil.generateToken(claims, Date.from(Instant.now().plusSeconds(60L)));
 
             session.setAttribute("token", jwt);
             session.setAttribute("userId", userFromDB.getId());

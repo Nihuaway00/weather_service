@@ -64,6 +64,11 @@
         <option name="VALUE" value="test" />
         <option name="IS_PREDEFINED" value="false" />
       </EnvironmentVariables>
+      <EnvironmentVariables>
+        <option name="NAME" value="OPENWEATHER_APPID" />
+        <option name="VALUE" value="40ff36eaf7713bd909f1d2eb8620c485" />
+        <option name="IS_PREDEFINED" value="false" />
+      </EnvironmentVariables>
     </ConfigurationWrapper>
     <ConfigurationWrapper VM_VAR="JAVA_OPTS" RunnerId="Profile">
       <option name="USE_ENV_VARIABLES" value="true" />
@@ -107,6 +112,11 @@
       <EnvironmentVariables>
         <option name="NAME" value="DATABASE_USER" />
         <option name="VALUE" value="test" />
+        <option name="IS_PREDEFINED" value="false" />
+      </EnvironmentVariables>
+      <EnvironmentVariables>
+        <option name="NAME" value="OPENWEATHER_APPID" />
+        <option name="VALUE" value="40ff36eaf7713bd909f1d2eb8620c485" />
         <option name="IS_PREDEFINED" value="false" />
       </EnvironmentVariables>
     </ConfigurationWrapper>
