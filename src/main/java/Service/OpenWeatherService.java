@@ -51,8 +51,8 @@ public class OpenWeatherService {
 
             return WeatherResponseDto.builder()
                     .name(jsonNode.get("name").asText())
-                    .lon(jsonNode.get("lon").asDouble())
-                    .lat(jsonNode.get("lat").asDouble())
+                    .lon(jsonNode.get("lon").asText())
+                    .lat(jsonNode.get("lat").asText())
                     .build();
         } catch (JsonProcessingException e){
             throw new OpenWeatherServiceException("Проблема с JSON ответом от OpenWeather: " + e.getMessage(), e);
@@ -82,8 +82,8 @@ public class OpenWeatherService {
 
             return WeatherResponseDto.builder()
                     .name(jsonNode.get("name").asText())
-                    .lon(jsonNode.get("lon").asDouble())
-                    .lat(jsonNode.get("lat").asDouble())
+                    .lon(jsonNode.get("lon").asText())
+                    .lat(jsonNode.get("lat").asText())
                     .build();
         } catch (JsonProcessingException e){
             throw new OpenWeatherServiceException("Проблема с JSON ответом от OpenWeather: " + e.getMessage(), e);

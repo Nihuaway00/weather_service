@@ -11,6 +11,6 @@ import lombok.NoArgsConstructor;
 @Getter
 public class WeatherResponseDto {
     private String name;
-    private Double lat;
-    private Double lon;
+    private String lat;
+    private String lon;
 }
