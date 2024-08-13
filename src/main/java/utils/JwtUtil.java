@@ -1,9 +1,6 @@
 package utils;
 
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.Jwt;
-import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.SignatureException;
 import lombok.Getter;
 
@@ -29,7 +26,7 @@ public class JwtUtil {
                 .compact();
     }
 
-    public static Jwt<?, ?> parseToken(String token) {
+    public static Jwt<?, ?> parseToken(String token) throws ExpiredJwtException, UnsupportedJwtException, MalformedJwtException, SignatureException, IllegalArgumentException {
         return Jwts.parser()
                 .verifyWith(JwtUtil.getKey())
                 .build()
@@ -37,14 +34,14 @@ public class JwtUtil {
     }
 
     public static boolean validateToken(String token) {
-        try{
+        try {
             Jwts.parser()
                     .verifyWith(JwtUtil.getKey())
                     .build()
                     .parse(token);
 
             return true;
-        }catch (SignatureException e) {
+        } catch (SignatureException e) {
             // Некорректная подпись
             System.out.println("Некорректная подпись");
         } catch (io.jsonwebtoken.ExpiredJwtException e) {
@@ -64,7 +61,7 @@ public class JwtUtil {
         return false;
     }
 
-    public static String parsePayloadToJson(String payload){
+    public static String parsePayloadToJson(String payload) {
         payload = payload.replace("{", "{\"");
         payload = payload.replace("}", "\"}");
         payload = payload.replace(", ", "\", \"");
