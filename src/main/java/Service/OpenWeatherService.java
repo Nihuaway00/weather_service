@@ -19,11 +19,11 @@ import java.util.concurrent.ExecutionException;
 import java.util.regex.Pattern;
 
 public class OpenWeatherService {
-    private String API_KEY;
-    private String getWeatherUrl;
+    private final String API_KEY;
+    private final String getWeatherUrl;
 
     public OpenWeatherService() {
-        this.API_KEY = System.getenv("OPENWEATHER_API_KEY");
+        this.API_KEY = System.getenv("OPENWEATHER_APPID");
         this.getWeatherUrl = "https://api.openweathermap.org/data/2.5/weather";
     }
 
@@ -50,16 +50,16 @@ public class OpenWeatherService {
             JsonNode jsonNode = objectMapper.readTree(response);
 
             return WeatherResponseDto.builder()
-                    .name(jsonNode.get("name").asText())
-                    .lon(jsonNode.get("lon").asText())
-                    .lat(jsonNode.get("lat").asText())
+                    .name(jsonNode.at("/name").asText())
+                    .lon(jsonNode.at("/coord/lon").asText())
+                    .lat(jsonNode.at("/coord/lat").asText())
                     .build();
         } catch (JsonProcessingException e){
             throw new OpenWeatherServiceException("Проблема с JSON ответом от OpenWeather: " + e.getMessage(), e);
         } catch (URISyntaxException e) {
             throw new BadRequestToServiceException("Проблема с синтаксисом запроса: " + e.getMessage(), e);
         } catch (InterruptedException | IOException e){
-            throw new OpenWeatherServiceException("Проблема с отправкой запроса: " + e.getMessage(), e);
+            throw new OpenWeatherServiceException("Проблема с отправкой запроса. API: " + API_KEY + ". " + e.getMessage(), e);
         }
 
     }
